@@ -64,7 +64,23 @@ func (s *Storage) UserByID(id uint) (*types.User, error) {
 		return scanIntoUser(rows)
 	}
 
-	return nil, fmt.Errorf("%s: user not found %w", op, err)
+	return nil, fmt.Errorf("%s: user not found: %w", op, err)
+}
+
+// UserByUsername - returned user by username.
+func (s *Storage) UserByUsername(username string) (*types.User, error) {
+	const op = "storage.UserByUsername"
+	rows, err := s.db.Query("SELECT * FROM users WHERE username = $1", username)
+	if err != nil {
+		return nil, fmt.Errorf("%s: %w", op, err)
+	}
+	defer rows.Close()
+
+	if rows.Next() {
+		return scanIntoUser(rows)
+	}
+
+	return nil, fmt.Errorf("%s: user not found: %w", op, err)
 }
 
 // utilitars functions

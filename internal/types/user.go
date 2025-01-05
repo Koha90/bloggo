@@ -27,6 +27,21 @@ type CreateUserRequest struct {
 	Password  string `json:"password"`
 }
 
+type LoginRequest struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
+}
+
+type LoginResponse struct {
+	Token    string `json:"token"`
+	Username string `json:"username"`
+}
+
+// ValidatePassword - say for himself.
+func (u *User) ValidatePassword(pw string) bool {
+	return bcrypt.CompareHashAndPassword([]byte(u.EncryptedPassword), []byte(pw)) == nil
+}
+
 // NewUser - with password.
 func NewUser(username, firstName, lastName, password string) (*User, error) {
 	encpw, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
