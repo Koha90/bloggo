@@ -86,9 +86,9 @@ const SignUpForm: React.FC = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div>
-        <label className="ml-2" htmlFor="username">
+    <form onSubmit={handleSubmit} className="flex flex-col m-10">
+      <div className="flex flex-col">
+        <label className="mb-1" htmlFor="username">
           Username:
         </label>
         <input
@@ -100,6 +100,7 @@ const SignUpForm: React.FC = () => {
           placeholder="username"
           required
           disabled={isSubmitting}
+          className="mb-2"
         />
         <label htmlFor="first_name">Имя:</label>
         <input
@@ -110,6 +111,7 @@ const SignUpForm: React.FC = () => {
           onChange={handleChange}
           placeholder="Имя"
           disabled={isSubmitting}
+          className="mb-2"
         />
         <label htmlFor="last_name">Фамилия:</label>
         <input
@@ -120,6 +122,7 @@ const SignUpForm: React.FC = () => {
           onChange={handleChange}
           placeholder="Фамилия"
           disabled={isSubmitting}
+          className="mb-2"
         />
         <label htmlFor="password">Пароль:</label>
         <input
@@ -131,6 +134,7 @@ const SignUpForm: React.FC = () => {
           placeholder="Пароль"
           required
           disabled={isSubmitting}
+          className="mb-2"
         />
         <label htmlFor="confirmPassword">Подтвердить пароль:</label>
         <input
@@ -144,7 +148,7 @@ const SignUpForm: React.FC = () => {
           disabled={isSubmitting}
         />
       </div>
-      <button type="submit" disabled={isSubmitting}>
+      <button type="submit" className="bg-sky-100" disabled={isSubmitting}>
         {isSubmitting ? "Регистрация..." : "Регистрация"}
       </button>
       {error && <p className="text-red-500">Ошибка: {error}</p>}

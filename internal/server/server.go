@@ -55,6 +55,7 @@ func (s *ApiServer) RegisterRoutes() http.Handler {
 
 func (s *ApiServer) setupAuthRoutes(r chi.Router) {
 	r.Post("/api/v1/signup", makeHTTPHandleFunc(s.handleCreateUser))
+	r.Post("/api/v1/signin", makeHTTPHandleFunc(s.handleLogin))
 }
 
 func (s *ApiServer) setupUserRouter(r chi.Router) {
