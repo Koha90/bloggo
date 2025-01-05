@@ -6,6 +6,7 @@ interface SignUpFormState {
   first_name: string;
   last_name: string;
   password: string;
+  confirPassword: string;
 }
 
 const SignUpForm: React.FC = () => {
@@ -14,6 +15,7 @@ const SignUpForm: React.FC = () => {
     first_name: "",
     last_name: "",
     password: "",
+    confirPassword: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -30,6 +32,9 @@ const SignUpForm: React.FC = () => {
     }
     if (!/^[a-zA-Z0-9_]+$/.test(formData.username)) {
       return "Имя пользователя может содержать только буквы, цифры и нижнее подчёрикивание";
+    }
+    if (formData.password !== formData.confirPassword) {
+      return "Пароли не совпадают";
     }
     return null;
   };
@@ -66,6 +71,7 @@ const SignUpForm: React.FC = () => {
         first_name: "",
         last_name: "",
         password: "",
+        confirPassword: "",
       });
     } catch (err) {
       if (axios.isAxiosError(err) && err.response) {
@@ -121,6 +127,17 @@ const SignUpForm: React.FC = () => {
           id="password"
           name="password"
           value={formData.password}
+          onChange={handleChange}
+          placeholder="Пароль"
+          required
+          disabled={isSubmitting}
+        />
+        <label htmlFor="confirmPassword">Подтвердить пароль:</label>
+        <input
+          type="password"
+          id="confirPassword"
+          name="confirPassword"
+          value={formData.confirPassword}
           onChange={handleChange}
           placeholder="Пароль"
           required
