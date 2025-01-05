@@ -24,14 +24,26 @@ const SignUpForm: React.FC = () => {
     setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
 
+  const validateForm = (): string | null => {
+    if (formData.password.length < 8) {
+      return "Пароль должен содержать не менее 8 символов";
+    }
+    if (!/^[a-zA-Z0-9_]+$/.test(formData.username)) {
+      return "Имя пользователя может содержать только буквы, цифры и нижнее подчёрикивание";
+    }
+    return null;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
     setSuccess(null);
 
-    // Проверка длины пароля
-    if (formData.password.length < 8) {
-      setError("Пароль должен содержать не менее 8 символов");
+    if (isSubmitting) return;
+
+    const validationError = validateForm();
+    if (validationError) {
+      setError(validationError);
       return;
     }
 
@@ -57,9 +69,8 @@ const SignUpForm: React.FC = () => {
       });
     } catch (err) {
       if (axios.isAxiosError(err) && err.response) {
-        setError(
-          `Server error: ${err.response?.statusText || "Unknown Error"} (${err.response.status})`,
-        );
+        const serverError = err.response.data?.error || "Unknown server error";
+        setError(`${serverError}`);
       } else {
         setError((err as Error).message);
       }
@@ -82,6 +93,7 @@ const SignUpForm: React.FC = () => {
           onChange={handleChange}
           placeholder="username"
           required
+          disabled={isSubmitting}
         />
         <label htmlFor="first_name">Имя:</label>
         <input
@@ -91,6 +103,7 @@ const SignUpForm: React.FC = () => {
           value={formData.first_name}
           onChange={handleChange}
           placeholder="Имя"
+          disabled={isSubmitting}
         />
         <label htmlFor="last_name">Фамилия:</label>
         <input
@@ -100,6 +113,7 @@ const SignUpForm: React.FC = () => {
           value={formData.last_name}
           onChange={handleChange}
           placeholder="Фамилия"
+          disabled={isSubmitting}
         />
         <label htmlFor="password">Пароль:</label>
         <input
@@ -110,6 +124,7 @@ const SignUpForm: React.FC = () => {
           onChange={handleChange}
           placeholder="Пароль"
           required
+          disabled={isSubmitting}
         />
       </div>
       <button type="submit" disabled={isSubmitting}>

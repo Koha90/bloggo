@@ -2,7 +2,10 @@ package storage
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
+
+	"github.com/mattn/go-sqlite3"
 
 	"github.com/koha90/bloggo/internal/types"
 )
@@ -15,6 +18,8 @@ type UserStorage interface {
 	DeleteUser(id uint) error
 	UpdateUser(id uint, updates map[string]interface{}) error
 }
+
+var ErrUserAlreadyExists = errors.New("user with this username already exists")
 
 // CreateUser - creates a user.
 func (s *Storage) CreateUser(user *types.User) error {
@@ -35,6 +40,12 @@ func (s *Storage) CreateUser(user *types.User) error {
 		user.UpdatedAt,
 	)
 	if err != nil {
+		// проверяем ошибку уникальным ограничением
+		var sqliteErr sqlite3.Error
+		if errors.As(err, &sqliteErr) && sqliteErr.Code == sqlite3.ErrConstraint &&
+			sqliteErr.ExtendedCode == sqlite3.ErrConstraintUnique {
+			return fmt.Errorf("%s: %w", op, ErrUserAlreadyExists)
+		}
 		return fmt.Errorf("%s: %w", op, err)
 	}
 	return nil
