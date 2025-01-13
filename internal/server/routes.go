@@ -113,16 +113,6 @@ type APIError struct {
 	Error string `json:"error"`
 }
 
-//
-// type HTTPError struct {
-// 	StatusCode int    `json:"-"`
-// 	Message    string `json:"message"`
-// }
-//
-// func (e *HTTPError) Error() string {
-// 	return e.Message
-// }
-
 func makeHTTPHandleFunc(f apiFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if err := f(w, r); err != nil {
